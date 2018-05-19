@@ -1,19 +1,48 @@
 #pragma once
 
+namespace syrup {
+
 template <typename T>
-class Rational
+T gcd(T a, T b)
 {
+    while (a > 0 && b > 0) {
+        if (a > b) {
+            a = a % b;
+        } else {
+            b = b % b;
+        }
+        if (a == 0) {
+            return b;
+        } else if (b == 0) {
+            return a;
+        }
+    }
+    return -1;
+}
+
+template <typename T>
+class Rational {
 public:
     Rational(T numerator = 0, T denominator = 1)
-        : m_iNumerator(numerator), m_iDenominator(denominator) {};
-    Rational(const Rational<T>& r) {};
+        : m_iNumerator(numerator)
+        , m_iDenominator(denominator){};
+    Rational(const Rational<T>& r){};
     virtual ~Rational(){};
 
     T numerator() const { return m_iNumerator; }
     T denominator() const { return m_iDenominator; }
-    
+
     explicit operator int() const { return m_iNumerator / m_iDenominator; }
     explicit operator double() const { return ((double)m_iNumerator) / m_iDenominator; }
+
+    void reduce()
+    {
+        T a = gcd(m_iNumerator, m_iDenominator);
+        if (a != -1) {
+            m_iNumerator /= a;
+            m_iDenominator /= a;
+        }
+    }
 
 private:
     T m_iNumerator;
@@ -21,10 +50,11 @@ private:
 };
 
 template <typename T>
-inline const Rational<T> operator*(const Rational<T>& lhs, const Rational<T>& rhs)
+inline const Rational<T> operator*(const Rational<T>& lhs,
+    const Rational<T>& rhs)
 {
     return Rational<T>(lhs.numerator() * rhs.numerator(),
-                    lhs.denominator() * rhs.denominator());
+        lhs.denominator() * rhs.denominator());
 }
 
 template <typename T>
@@ -40,10 +70,11 @@ inline const Rational<T> operator*(const T lhs, const Rational<T>& rhs)
 }
 
 template <typename T>
-inline const Rational<T> operator/(const Rational<T>& lhs, const Rational<T>& rhs)
+inline const Rational<T> operator/(const Rational<T>& lhs,
+    const Rational<T>& rhs)
 {
     return Rational<T>(lhs.numerator() * rhs.denominator(),
-                    lhs.denominator() * rhs.numerator());
+        lhs.denominator() * rhs.numerator());
 }
 
 template <typename T>
@@ -57,3 +88,8 @@ inline const Rational<T> operator/(const T& lhs, const Rational<T>& rhs)
 {
     return Rational<T>(lhs * rhs.denominator(), rhs.numerator());
 }
+
+template <typename T>
+inline const Rational<T> operator-(const Rational<T>& lhs, const T& rhs) {}
+
+} // namespace syrup
