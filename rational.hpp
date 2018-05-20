@@ -5,19 +5,13 @@ namespace syrup {
 template <typename T>
 T gcd(T a, T b)
 {
-    while (a > 0 && b > 0) {
-        if (a > b) {
-            a = a % b;
-        } else {
-            b = b % b;
-        }
-        if (a == 0) {
-            return b;
-        } else if (b == 0) {
-            return a;
-        }
+    T c;
+    while (a != 0) {
+        c = a;
+        a = b % a;
+        b = c;
     }
-    return -1;
+    return b;
 }
 
 template <typename T>
